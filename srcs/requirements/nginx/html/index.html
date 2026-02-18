@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <title>Workshop Docker - Introduzione</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <style>
+        .highlight { color: #00ff00; font-weight: bold; }
+        .code-box { background: #222; padding: 10px; border-radius: 5px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- slide 1 -->
+            <section data-background-color="#000">
+                <p style="color: #00ff00; font-size: 0.6em; letter-spacing: 4px; margin-bottom: 15px; opacity: 0.8;">
+                    BORN2PEER • BY BDE
+                </p>
+                
+                <h1 style="color: #00ff00; font-size: 2em; text-shadow: 0 0 15px rgba(0,255,0,0.4); margin: 0; font-weight: bold;">
+                    WORKSHOP DOCKER
+                </h1>
+                
+                <div style="margin: 60px auto; width: fit-content; padding: 20px 45px; border-top: 1px solid #333; border-bottom: 1px solid #333; background: rgba(255,255,255,0.02);">
+                    <p style="margin: 0; font-size: 0.75em; letter-spacing: 1px; color: #ccc;">
+                        Dalle basi di docker all'orchestrazione multi-servizio
+                    </p>
+                </div>
+
+                <div style="display: flex; justify-content: center; gap: 60px; align-items: center; font-size: 0.7em; margin-top: 60px;">
+                    <div style="text-align: left;">
+                        <p style="margin: 0; color: #666; font-size: 0.8em; text-transform: uppercase;">Speaker</p>
+                        <p style="margin: 0; font-weight: bold; color: #00ff00; font-size: 1.3em;">amatta</p>
+                    </div>
+                    
+                    <div style="width: 1px; height: 45px; background: #333;"></div>
+                    
+                    <div style="text-align: left;">
+                        <p style="margin: 0; color: #666; font-size: 0.8em; text-transform: uppercase;">Focus</p>
+                        <p style="margin: 0; font-weight: bold; color: #fff; font-size: 1.3em;">Progetto Inception</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- slide 2 -->
+            <section>
+                <h3>Analisi dell'Avvio Rapido</h3>
+                <p style="font-size: 0.6em; margin-bottom: 20px; opacity: 0.7;">Cosa ha fatto realmente il comando <code>make</code>?</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+                    <ul style="width: 60%; font-size: 0.55em; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 15px;">🟢 <b>Automazione:</b> Il <code>Makefile</code> ha lanciato il setup.</li>
+                        <li style="margin-bottom: 15px;">🛠️ <b>Costruzione:</b> Immagine creata da zero.</li>
+                        <li style="margin-bottom: 15px;">🔌 <b>Networking:</b> Configurazione della comunicazione.</li>
+                        <li style="margin-bottom: 15px;">🌐 <b>Deployment:</b> Nginx sta servendo queste slide!</li>
+                    </ul>
+                    
+                    <div style="width: 40%; background: #111; padding: 15px; border-radius: 8px; border: 1px solid #333; font-family: monospace; font-size: 0.4em; color: #fff; text-align: left;">
+                        <span style="color: #00ff00;">$ make</span><br>
+                        [+] up 3/3<br>
+                        <span style="color: #00ff00;">✔</span> Image srcs-nginx Built<br>
+                        <span style="color: #00ff00;">✔</span> Network srcs_inception Created<br>
+                        <span style="color: #00ff00;">✔</span> Container nginx Started
+                    </div>
+                </div>
+            </section>
+
+            <!-- slide 3 -->
+            <section>
+                <h3>Cos'è Docker?</h3>
+                <p style="font-size: 0.8em; opacity: 0.7;">La piattaforma per il <b>Software Packaging</b></p>
+                
+                <div style="display: flex; gap: 20px; margin-top: 30px; justify-content: center;">
+                    
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 10px;">
+                        <h3 style="color: #00ff00; font-size: 0.8em;">🚀 Performance</h3>
+                        <div class="fragment" data-fragment-index="1">
+                            <table style="font-size: 0.35em; color: #fff;">
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>VM</th>
+                                    <th style="color: #00ff00;">Docker</th>
+                                </tr>
+                                <tr>
+                                    <td>OS</td>
+                                    <td>Guest OS completo</td>
+                                    <td>Kernel condiviso</td>
+                                </tr>
+                                <tr>
+                                    <td>Peso</td>
+                                    <td>Gigabytes</td>
+                                    <td>Megabytes</td>
+                                </tr>
+                                <tr>
+                                    <td>Boot</td>
+                                    <td>Minuti</td>
+                                    <td>Millisecondi</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 10px;">
+                        <h3 style="color: #00ff00; font-size: 0.8em;">📦 Isolamento</h3>
+                        <div class="fragment" data-fragment-index="2">
+                            <ul style="font-size: 0.45em; list-style: none; padding: 0;">
+                                <li style="margin-bottom: 10px;">🛡️ <b>Processo:</b> Ogni container vede solo i suoi processi (namespace PID separato).</li>
+                                <li style="margin-bottom: 10px;">🌐 <b>Rete:</b> Ogni container ha la sua scheda di rete virtuale (IP e porte propri).</li>
+                                <li style="margin-bottom: 10px;">📁 <b>File System:</b> Il container vede solo i file dell’immagine e dei suoi volumi.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 10px;">
+                        <h3 style="color: #00ff00; font-size: 0.8em;">🌍 Portabilità</h3>
+                        <div class="fragment" data-fragment-index="3">
+                            <p style="font-size: 0.45em;">"Build once, run anywhere". Lo standard universale che garantisce lo stesso comportamento su ogni macchina.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- slide 4 -->
+            <section>
+                <h3>Immagine vs Container</h3>
+                <p style="font-size: 0.7em; opacity: 0.7;">Dalla "Ricetta" al "Piatto Servito"</p>
+
+                <div style="display: flex; gap: 15px; margin-top: 20px; align-items: stretch;">
+                    
+                    <div style="flex: 2; background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #444;">
+                        <h4 style="font-size: 0.6em; color: #00ff00;">1. Il Dockerfile</h4>
+                        <pre style="font-size: 0.3em; margin: 0; box-shadow: none;">
+                        <code class="language-dockerfile">FROM alpine:3.22
+                            
+RUN apk update && apk add nginx
+
+COPY conf /etc/nginx
+
+COPY html /var/www/html
+
+CMD ["nginx","-g","daemon off;"]</code></pre>
+                        <p style="font-size: 0.4em; margin-top: 10px;">La <b>Ricetta</b>: un file di testo con le istruzioni.</p>
+                    </div>
+
+                    <div class="fragment" data-fragment-index="1" style="flex: 1; background: #222; padding: 15px; border-radius: 10px; border: 1px solid #00ff00;">
+                        <h4 style="font-size: 0.6em; color: #00ff00;">2. L'Immagine</h4>
+                        <div style="font-size: 2em; margin: 10px 0;">💾</div>
+                        <p style="font-size: 0.45em;">Lo <b>Snapshot</b> statico.</p>
+                        <ul style="font-size: 0.35em; text-align: left;">
+                            <li>Buildata dal Dockerfile.</li>
+                            <li><b>Read-Only</b> I file di base non cambiano mai.</li>
+                            <li>Contiene OS + App + Config.</li>
+                        </ul>
+                    </div>
+
+                    <div class="fragment" data-fragment-index="2" style="flex: 1; background: #004400; padding: 15px; border-radius: 10px; border: 2px solid #00ff00;">
+                        <h4 style="font-size: 0.6em; color: #fff;">3. Il Container</h4>
+                        <div style="font-size: 2em; margin: 10px 0;">⚙️</div>
+                        <p style="font-size: 0.45em;">L'<b>Istanza Viva</b>.</p>
+                        <ul style="font-size: 0.35em; text-align: left;">
+                            <li>L'immagine in esecuzione.</li>
+                            <li>Read-Write layer: <b>I cambiamenti sono temporanei.</b>.</li>
+                            <li><b>PID 1:</b> Il container vive finché vive il processo principale.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- slide 5 -->
+            <section>
+            <h3 >Comandi di Sopravvivenza</h3>
+            <p style="font-size: 0.5em; opacity: 0.7; margin-top: -10px;">Il toolkit essenziale per la gestione dei container</p>
+
+            <div style="text-align: left; margin-top: 15px; font-size: 0.9em;">
+                <div class="fragment" data-fragment-index="1" style="margin-bottom: 8px;">
+                    <code style="color: #00ff00; font-size: 0.7em;">docker build -t nome_immagine .</code>
+                    <p style="font-size: 0.38em; margin: 0 0 0 15px; opacity: 0.9;">Builda la "ricetta" (Dockerfile) e crea l'immagine statica.</p>
+                </div>
+
+                <div class="fragment" data-fragment-index="2" style="margin-bottom: 8px;">
+                    <code style="color: #00ff00; font-size: 0.7em;">docker run nome_immagine</code>
+                    <p style="font-size: 0.38em; margin: 0 0 0 15px; opacity: 0.9;">Crea e avvia un container basato sull'immagine scelta.</p>
+                </div>
+
+                <div class="fragment" data-fragment-index="3" style="margin-bottom: 8px;">
+                    <code style="color: #00ff00; font-size: 0.7em;">docker ps [-a]</code>
+                    <p style="font-size: 0.38em; margin: 0 0 0 15px; opacity: 0.9;">Lista i container attivi [o tutti, inclusi quelli spenti].</p>
+                </div>
+
+                <div class="fragment" data-fragment-index="4" style="margin-bottom: 8px;">
+                    <code style="color: #00ff00; font-size: 0.7em;">docker logs [nome_container]</code>
+                    <p style="font-size: 0.38em; margin: 0 0 0 15px; opacity: 0.9;">Visualizza i log/output del container: utile per debug, errori.</p>
+                </div>
+
+                <div class="fragment" data-fragment-index="5" style="margin-bottom: 8px;">
+                    <code style="color: #00ff00; font-size: 0.7em;">docker exec -it [nome_container] sh</code>
+                    <p style="font-size: 0.38em; margin: 0 0 0 15px; opacity: 0.9;">Apre una shell (<b>sh</b>) nel container.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- slide 6 -->
+        <section>
+            <h3>Laboratorio: Build & Run</h3>
+            <p style="font-size: 0.6em; opacity: 0.7; margin-top: -10px;">
+                Dalla teoria alla pratica: il mistero dell'isolamento
+            </p>
+
+            <div style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-start;">
+                <div style="flex: 1; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.4em; text-align: left;">
+                    <p style="color: #666; margin: 0;"># 1. Costruiamo l'immagine</p>
+                    <span style="color: #00ff00;">$ docker build -t my-nginx .</span>
+                </div>
+                <div class="fragment" data-fragment-index="1" style="flex: 1; background: #222; padding: 15px; border-radius: 10px;">
+                    <p style="font-size: 0.45em; margin: 0;">
+                        📦 <b>Immagine pronta:</b><br>
+                        Contiene Alpine + Nginx + i tuoi file (COPY).
+                    </p>
+                </div>
+            </div>
+
+            <div class="fragment" data-fragment-index="2" style="margin-top: 15px; display: flex; gap: 15px; align-items: flex-start;">
+                <div style="flex: 1; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.4em; text-align: left;">
+                    <p style="color: #666; margin: 0;"># 2. Avviamo il container</p>
+                    <span style="color: #00ff00;">$ docker run -d --name web-1 my-nginx</span>
+                </div>
+
+                <div class="fragment" data-fragment-index="3" style="flex: 1; background: #331a00; padding: 15px; border-radius: 10px; border: 1px solid #ffae00;">
+                    <p style="font-size: 0.45em; margin: 0; font-weight: bold;">
+                        Domanda: secondo voi ora funziona❓
+                    </p>
+                    <p style="font-size: 0.35em; opacity: 0.8; margin-top: 5px;">
+                        Verificate su <u>localhost</u> nel browser...
+                    </p>
+                    
+                    <div class="fragment" data-fragment-index="4" style="margin-top: 10px; border-top: 1px solid rgba(255,174,0,0.3); padding-top: 5px;">
+                        <p style="font-size: 0.35em; color: #ffae00;">
+                            🕵️ <b>Test 1:</b> lanciate <br>
+                            <code>docker exec web-1 curl localhost</code> <br>
+                            Cosa ti risponde il container?
+                        </p>
+                    </div>
+
+                    <div class="fragment" data-fragment-index="5" style="margin-top: 10px; border-top: 1px solid rgba(255,174,0,0.3); padding-top: 5px;">
+                        <p style="font-size: 0.35em; color: #ffae00;">
+                            🕵️ <b>Test 2:</b> lanciate <br>
+                            <code>docker ps</code>. <br>
+                            Analizza l'output: riesci a trovare cosa manca?
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fragment" data-fragment-index="6" style="margin-top: 15px; display: flex; gap: 15px; align-items: flex-start;">
+                <div style="flex: 1; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; font-family: monospace; font-size: 0.4em; text-align: left;">
+                    <p style="color: #666; margin: 0;"># 3. Creiamo il "Ponte" (Port Mapping)</p>
+                    <span style="color: #00ff00;">$ docker run -d -p 8081:80 --name web-2 my-nginx</span>
+                </div>
+
+                <div class="fragment" data-fragment-index="7" style="flex: 1; background: #002200; padding: 15px; border-radius: 10px; border: 1px solid #00ff00;">
+                    <p style="font-size: 0.45em; margin: 0;">
+                        ✅ <b>Successo!</b><br>
+                        Il traffico ora passa dall'Host (8081) al Container (80).
+                    </p>
+                </div>
+            </div>
+
+            <p class="fragment" data-fragment-index="8" style="margin-top: 25px; font-size: 0.5em; color: #00ff00; font-weight: bold;">
+                🚀 In Inception automatizzeremo tutto questo con il Docker Compose.
+            </p>
+        </section>
+
+        <!-- slide 7 -->
+        <section>
+            <h3>Perché Docker Compose?</h3>
+            <p style="font-size: 0.6em; opacity: 0.7;">
+                Quando un container non basta più
+            </p>
+
+            <div style="display: flex; gap: 20px; margin-top: 30px; align-items: stretch;">
+
+                <!-- WITHOUT COMPOSE -->
+                <div style="flex: 1; background: #330000; padding: 15px; border-radius: 10px; border: 1px solid #ff4444;">
+                    <h3 style="font-size: 0.7em; color: #ff6666;">❌ Senza Compose</h3>
+                    <ul style="font-size: 0.45em; list-style: none; padding: 0; margin-top: 10px;">
+                        <li style="margin-bottom: 10px;">🖥️ 3 container = 3+ comandi</li>
+                        <li style="margin-bottom: 10px;">🔀 Ordine di avvio manuale</li>
+                        <li style="margin-bottom: 10px;">🧠 Devi ricordarti tutto</li>
+                        <li style="margin-bottom: 10px;">💥 Fragile, non riproducibile</li>
+                    </ul>
+                </div>
+
+                <!-- WITH COMPOSE -->
+                <div class="fragment" data-fragment-index="1" style="flex: 1; background: #004400; padding: 15px; border-radius: 10px; border: 2px solid #00ff00;">
+                    <h3 style="font-size: 0.7em; color: #00ff00;">✅ Con Compose</h3>
+                    <ul style="font-size: 0.45em; list-style: none; padding: 0; margin-top: 10px;">
+                        <li style="margin-bottom: 10px;">📄 Un solo file: <b>docker-compose.yml</b></li>
+                        <li style="margin-bottom: 10px;">🔁 Ordine e dipendenze automatiche</li>
+                        <li style="margin-bottom: 10px;">🔧 Configurazione dichiarativa</li>
+                        <li style="margin-bottom: 10px;">♻️ Sempre lo stesso risultato</li>
+                    </ul>
+                </div>
+
+                </div>
+
+                <div class="fragment" data-fragment-index="2" style="margin-top: 30px; background: #222; padding: 15px; border-radius: 10px;">
+                    <p style="font-size: 0.5em; margin: 0;">
+                        <b>Docker-compose</b>  coordina più container Docker come <b>un’unica applicazione</b>.
+                    </p>
+                </div>
+                <p class="fragment" data-fragment-index="3" style="margin-top: 20px; font-size: 0.45em; opacity: 0.8;">
+                    👉 Inception <b>inizia qui</b>: più servizi, una sola infrastruttura.
+                </p>
+            </section>
+
+            <!-- slide 7b -->
+            <section>
+                <h3>Il Trio di Inception</h3>
+                <p style="font-size: 0.6em; opacity: 0.7;">Oltre il web server: i motori dell'infrastruttura</p>
+
+                <div style="display: flex; gap: 20px; margin-top: 30px; align-items: stretch;">
+                    <div style="flex: 1; background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px solid #444;">
+                        <h3 style="font-size: 0.7em; color: #777bb3; margin-bottom: 15px;">🐘 PHP-FPM</h3>
+                        <div class="fragment" data-fragment-index="1" >
+                            <p style="font-size: 0.4em; line-height: 1.6;">
+                                Nginx non sa "leggere" il PHP, sa solo consegnare file statici. <br><br>
+                                <b>PHP-FPM</b> è il motore che esegue il codice di WordPress e restituisce il risultato a Nginx. 
+                            </p>
+                            <p style="font-size: 0.35em; color: #777bb3; margin-top: 10px; border-top: 1px solid #333; padding-top: 10px;">
+                                🔍 <i>Ascolta sulla porta 9000.</i>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1; background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px solid #444;">
+                        <h3 style="font-size: 0.7em; color: #139ec9; margin-bottom: 15px;">💾 MariaDB</h3>
+                        <div class="fragment" data-fragment-index="2" >
+                            <p style="font-size: 0.4em; line-height: 1.6;">
+                                È la memoria del tuo sito. Qui vengono salvati post, commenti, utenti e configurazioni.<br><br>
+                                Senza un <b>Volume</b>, ogni riavvio del container MariaDB cancellerebbe tutto il sito.
+                            </p>
+                            <p style="font-size: 0.35em; color: #139ec9; margin-top: 10px; border-top: 1px solid #333; padding-top: 10px;">
+                                🔍 <i>Ascolta sulla porta 3306.</i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="fragment" style="margin-top: 30px; background: rgba(0,255,0,0.05); padding: 15px; border-radius: 10px; border: 1px dashed #00ff00;">
+                    <p style="font-size: 0.45em; margin: 0;">
+                        <b>Il collegamento:</b> WordPress usa il <u>nome del servizio</u> (es. <code>mariadb</code>) per connettersi via rete, grazie al DNS interno di Docker.
+                    </p>
+                </div> -->
+            </section>
+
+            <!-- slide 8 -->
+            <section>
+                <h3>docker-compose.yml</h3>
+                <p style="font-size: 0.6em; opacity: 0.7;">
+                    Un file per descrivere tutta l’infrastruttura
+                </p>
+
+                <div style="display: flex; gap: 20px; margin-top: 25px; align-items: stretch;">
+
+                    <div style="flex: 2; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333;">
+                        <pre style="font-size: 0.35em; margin: 0;">
+            <code class="language-yaml">
+            services:
+              nginx:
+                build: ./requirements/nginx
+              ports:
+                - "443:443"
+              restart: always
+              volumes:
+              - wordpress:/var/www/html
+              networks:
+                - inception
+
+            volumes:
+              wordpress:
+                
+            networks:
+              inception:
+                driver: bridge</code>
+                </pre>
+                    </div>
+
+                    <div class="fragment" data-fragment-index="1" style="flex: 2; background: #222; padding: 15px; border-radius: 10px;">
+                        <ul style="font-size: 0.45em; list-style: none; padding: 0;">
+                            <li style="margin-bottom: 10px;">📦 <b>services</b> = container</li>
+                            <li style="margin-bottom: 10px;">🛠️ <b>build</b> = Dockerfile</li>
+                            <li style="margin-bottom: 10px;">🔌 <b>ports</b> = mappatura porte</li>
+                            <li style="margin-bottom: 10px;">🔄 <b>Restart:</b> Gestione automatica dei crash.</li>
+                            <li style="margin-bottom: 10px;">💾 <b>volumes</b> = persistenza dati</li>
+                            <li style="margin-bottom: 10px;">🌐 <b>networks</b> = isolamento e comunicazione</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <p class="fragment" data-fragment-index="2" style="margin-top: 15px; font-size: 0.45em; opacity: 0.8;">
+                    👉 Inception è questo file + regole precise.
+                </p>
+            </section>
+
+            <!-- slide 9 -->
+            <section>
+                <h2>Docker Network</h2>
+                <p style="font-size: 0.6em; opacity: 0.7;">
+                    Perché <code>localhost</code> non è tuo amico
+                </p>
+
+                <div style="display: flex; gap: 20px; margin-top: 25px; align-items: stretch;">
+
+                    <div style="flex: 1; background: #330000; padding: 15px; border-radius: 10px; border: 1px solid #ff4444;">
+                        <h3 style="font-size: 0.7em; color: #ff6666;">❌ Errore comune</h3>
+                        <ul style="font-size: 0.45em; list-style: none; padding: 0; margin-top: 10px;">
+                            <li style="margin-bottom: 10px;">🌐 Usare <code>localhost</code> tra container.</li>
+                            <li style="margin-bottom: 10px;">🔗 Cercare di indovinare l'IP.</li>
+                            <li style="margin-bottom: 10px;">💥 Il sistema è fragile e isolato.</li>
+                        </ul>
+                    </div>
+
+                    <div class="fragment" data-fragment-index="1"
+                        style="flex: 1; background: #002200; padding: 15px; border-radius: 10px; border: 2px solid #00ff00;">
+                        <h3 style="font-size: 0.7em; color: #00ff00;">✅ Docker DNS</h3>
+                        <ul style="font-size: 0.45em; list-style: none; padding: 0; margin-top: 10px;">
+                            <li style="margin-bottom: 10px;">🕸️ Rete <b>Bridge</b> condivisa.</li>
+                            <li style="margin-bottom: 10px;">📛 Ogni container ha un nome DNS.</li>
+                            <li style="margin-bottom: 10px;">🔄 Comunicano tramite <b>Service Name</b>.</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="fragment" data-fragment-index="2"
+                    style="margin-top: 25px; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333;">
+                    <p style="font-size: 0.45em; margin: 0; font-family: monospace;">
+                        <span style="opacity: 0.7;">In Inception, il collegamento avviene così:</span><br>
+                        WordPress <span style="color: #00ff00;">→</span> <b style="color: #ffae00;">mariadb</b>:3306<br>
+                        Nginx <span style="color: #00ff00;">→</span> <b style="color: #ffae00;">wordpress</b>:9000
+                    </p>
+                </div>
+
+                <p class="fragment" data-fragment-index="3"
+                style="margin-top: 20px; font-size: 0.45em; color: #00ff00; font-weight: bold;">
+                    👉 Ogni container vede se stesso come "localhost". <br>
+                    La rete Docker è il tunnel che li unisce.
+                </p>
+            </section>
+
+            <!-- slide 10 -->
+            <section>
+                <h3>Docker Volumes</h3>
+                <p style="font-size: 0.6em; opacity: 0.7;">
+                    I container muoiono. I dati no.
+                </p>
+
+                <div style="display: flex; gap: 20px; margin-top: 25px; align-items: stretch;">
+
+                    <!-- WITHOUT VOLUME -->
+                    <div style="flex: 1; background: #330000; padding: 15px; border-radius: 10px; border: 1px solid #ff4444;">
+                        <h3 style="font-size: 0.7em; color: #ff6666;">❌ Senza volume</h3>
+                        <ul style="font-size: 0.45em; list-style: none; padding: 0; margin-top: 10px;">
+                            <li style="margin-bottom: 10px;">💥 Dati persi ogni volta</li>
+                            <li style="margin-bottom: 10px;">🔄 Rebuild = reset</li>
+                            <li style="margin-bottom: 10px;">😱 Inception fallito</li>
+                        </ul>
+                    </div>
+
+                    <!-- WITH VOLUME -->
+                    <div class="fragment" data-fragment-index="1" style="flex: 1; background: #004400; padding: 15px; border-radius: 10px; border: 2px solid #00ff00;">
+                        <h3 style="font-size: 0.7em; color: #00ff00;">✅ Con volume</h3>
+                        <ul style="font-size: 0.45em; list-style: none; padding: 0; margin-top: 10px;">
+                            <li style="margin-bottom: 10px;">💾 Dati persistenti</li>
+                            <li style="margin-bottom: 10px;">♻️ Container sacrificabili</li>
+                            <li style="margin-bottom: 10px;">🧠 Architettura corretta</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="fragment" data-fragment-index="2" style="margin-top: 25px; background: #222; padding: 15px; border-radius: 10px;">
+                    <p style="font-size: 0.45em; margin: 0;">
+                        In Inception:
+                        <br>📦 MariaDB → volume  
+                        <br>📁 WordPress files → volume
+                    </p>
+                </div>
+
+                <p class="fragment" data-fragment-index="3" style="margin-top: 20px; font-size: 0.45em; opacity: 0.8;">
+                    👉 I container sono <b>stateless</b>.  
+                    La persistenza vive fuori...
+                </p>
+            </section>
+
+            <!-- slide 11 -->
+           <section>
+                <h3>Dove vivono i dati?</h3>
+                <p style="font-size: 0.7em; opacity: 0.7; margin-bottom: 20px;">
+                    Collegare il container alla macchina Host (VM)
+                </p>
+
+                <div style="display: flex; gap: 15px; align-items: stretch; min-height: 400px;">
+                    
+                    <div style="flex: 1; background: #222; padding: 20px; border-radius: 12px; border: 1px solid #444; display: flex; flex-direction: column;">
+                        <h3 style="font-size: 0.7em; color: #aaa; margin-bottom: 15px;">Named Volume (Standard)</h3>
+                        <div style="background: #111; padding: 15px; border-radius: 8px; flex-grow: 1;">
+                            <pre style="font-size: 0.45em; margin: 0; line-height: 1.4;">
+            <code class="language-yaml">volumes:
+  - wordpress:</code></pre>
+                        </div>
+                        <p style="font-size: 0.45em; margin-top: 15px; opacity: 0.8; line-height: 1.4;">
+                            Gestito da Docker in: <br>
+                            <code>/var/lib/docker/volumes/...</code> <br>
+                            Semplice, ma percorso "nascosto".
+                        </p>
+                    </div>
+
+                    <div style="flex: 1.2; background: #1a2a1a; padding: 20px; border-radius: 12px; border: 2px solid #00ff00; display: flex; flex-direction: column;">
+                        <h3 style="font-size: 0.7em; color: #00ff00; margin-bottom: 15px;">Named + Bind (Inception)</h3>
+                        <div style="background: #111; padding: 15px; border-radius: 8px; flex-grow: 1;">
+                            <pre style="font-size: 0.45em; margin: 0; line-height: 1.4;">
+            <code class="language-yaml">volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/amatta/data/wp
+      o: bind</code></pre>
+                        </div>
+                        <p style="font-size: 0.45em; margin-top: 15px; opacity: 0.9; line-height: 1.4;">
+                            <b>Requisito Project:</b> puntiamo <br>
+                            alla nostra cartella <code>/home</code> <br>
+                            tramite l'opzione <code>device</code>.
+                        </p>
+                    </div>
+
+                </div>
+
+                <p class="fragment" style="margin-top: 25px; font-size: 0.55em; background: #333; padding: 12px; border-radius: 10px;">
+                    💡 Usiamo un <b>Named Volume</b> che punta a un <b>Bind Mount</b> per persistenza e controllo.
+                </p>
+            </section>         
+
+
+            <!-- slide 12 -->
+            <section>
+                <h3>Env vs Secrets</h3>
+                <p style="font-size: 0.6em; opacity: 0.7;">Configurazione ≠ Segreti</p>
+
+                <div style="display: flex; gap: 20px; margin-top: 25px; align-items: stretch;">
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 10px; border-top: 5px solid #00ff00;">
+                        <h3 style="font-size: 0.7em; color: #00ff00;">.env (Configurazione)</h3>
+                        <pre style="font-size: 0.35em; background: #111; padding: 10px; text-align: left;">
+            DOMAIN_NAME=amatta.42.fr
+            MYSQL_USER=wp_user
+            MYSQL_DATABASE=maria_user</pre>
+                        <p style="font-size: 0.35em; margin-top: 10px; opacity: 0.8;">
+                            Dati necessari al setup. <br>
+                            Visibili nel sistema con <code>env</code>.
+                        </p>
+                    </div>
+
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 10px; border-top: 5px solid #ff4444;">
+                        <h3 style="font-size: 0.7em; color: #ff6666;">Secrets (Credenziali)</h3>
+                        <pre style="font-size: 0.35em; background: #111; padding: 10px; text-align: left;">
+            db_password.txt
+            wp_password.txt
+            credentials.txt</pre>
+                        <p style="font-size: 0.35em; margin-top: 10px; opacity: 0.8;">
+                            Dati sensibili. <br>
+                            Montati come file in <code>/run/secrets/</code>.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="fragment" style="margin-top: 25px; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #ff4444;">
+                    <p style="font-size: 0.5em; margin: 0;">
+                        ❌ Password hardcodate nei file <br>❌ Password su Git
+                        <br><span style="color: #ff4444;" ><b>➡ Progetto fallito</b></span>
+                    </p>
+                </div>
+
+                <p class="fragment" style="margin-top: 15px; font-size: 0.45em; opacity: 0.8;">
+                    👉 Inception valuta <b>sicurezza e separazione delle responsabilità</b>.
+                </p>
+            </section>
+
+            <!-- slide 13 -->
+            <section>
+                <h3>Inception Checklist (v5.2)</h3>
+                <p style="font-size: 0.55em; opacity: 0.7; margin-top: -10px;">Requisiti tassativi per la validazione</p>
+
+                <div style="display: flex; gap: 15px; margin-top: 20px; text-align: left; font-size: 0.35em;">
+                    <div style="flex: 1; background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #444;">
+                        <h4 style="color: #00ff00; margin-bottom: 10px;">🏗️ Infrastruttura</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>🔹 <b>VM</b>: Obbligatoria per tutto il progetto.</li>
+                            <li>🔹 <b>Makefile</b>: Gestione build e avvio via Compose.</li>
+                            <li>🔹 <b>No Hacks</b>: Vietati <code>tail -f</code> o loop infiniti.</li>
+                            <li>🔹 <b>Domain</b>: Deve essere <code>login.42.fr</code>.</li>
+                            <li>🔹 <b>Restart</b>: Automatico in caso di crash.</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="flex: 1; background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #444;">
+                        <h4 style="color: #00ff00; margin-bottom: 10px;">🔑 Sicurezza & Dati</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>🔹 <b>NGINX</b>: TLS 1.2/1.3 su porta 443.</li>
+                            <li>🔹 <b>No Pull</b>: Build proprie (no DockerHub pronto).</li>
+                            <li>🔹 <b>Volumes</b>: Dati in <code>/home/login/data</code>.</li>
+                            <li>🔹 <b>Secrets</b>: Per password e dati sensibili.</li>
+                            <li>🔹 <b>Git Clean</b>: Zero credenziali nel repository.</li>
+                        </ul>
+                    </div>
+
+                    <div style="flex: 1; background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #00ff00;">
+                        <h4 style="color: #00ff00; margin-bottom: 10px;">📄 Documentazione</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>🔹 <b>README.md</b>: confronti tecnici report IA.</li>
+                            <li>🔹 <b>USER_DOC.md</b>: Guida ai servizi , start/stop e credenziali.</li>
+                            <li>🔹 <b>DEV_DOC.md</b>: Setup ambiente , Makefile e persistenza.</li>
+                            <li>🔹 <b>No Latest</b>: Vietato l'uso del tag.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- slide 14 -->
+            <section data-background-color="#000">
+                <h2 style="color: #00ff00;">Domande & Approfondimenti</h2>
+                <p style="font-size: 0.6em; opacity: 0.7;">Dubbi tecnici o curiosità?</p>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 30px; justify-content: center;">
+                    <div style="background: #111; padding: 12px 20px; border-radius: 50px; border: 1px solid #00ff00; font-size: 0.4em;">🌐 Networking</div>
+                    <div style="background: #111; padding: 12px 20px; border-radius: 50px; border: 1px solid #00ff00; font-size: 0.4em;">💾 Volumi & Bind</div>
+                    <div style="background: #111; padding: 12px 20px; border-radius: 50px; border: 1px solid #00ff00; font-size: 0.4em;">🔑 Secrets & Env</div>
+                    <div style="background: #111; padding: 12px 20px; border-radius: 50px; border: 1px solid #00ff00; font-size: 0.4em;">📄 Subject</div>
+                </div>
+
+                <div style="margin-top: 60px; opacity: 0.8;">
+                    <p style="font-size: 0.5em; color: #00ff00; letter-spacing: 8px; font-weight: bold;">
+                        BUILD • RUN • EXPLAIN
+                    </p>
+                </div>
+
+                <div style="margin-top: 60px; border-top: 1px solid #333; width: 30%; margin-left: auto; margin-right: auto; padding-top: 20px;">
+                <p style="font-size: 0.55em; color: #888; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+                        Workshop Born2Peer
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            fragments: true,
+            slideNumber: 'c/t'
+        });
+    </script>
+</body>
+</html>
