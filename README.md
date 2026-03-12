@@ -7,7 +7,7 @@ Questo progetto è stato presentato e utilizzato durante il workshop "Born2Peer:
 
 ## Obiettivi del Workshop
 - Abbassare la barriera d'ingresso: Spiegare perché Docker non è solo "roba da sistemisti".
-- Inception Ready: Una guida pratica per soddisfare i severi requisiti del subject (TLS, Alpine, Volumes, Network isolati).
+- Inception Ready: Una guida pratica per soddisfare i severi requisiti del subject (Alpine, Volumes, Network isolato).
 - Mani in pasta: Dimostrazione live di build e orchestrazione multi-servizio.
 
 ## Descrizione
@@ -56,4 +56,5 @@ Il progetto funge da infrastruttura per le slide (generate con Reveal.js) e come
 - Tutti i file e le configurazioni sono pensati per essere didattici e facilmente adattabili.
 - Il progetto è strutturato per rispecchiare l'architettura richiesta dal subject **42 Inception**.
 - **Nota sul TLS:** Per semplicità didattica, questa versione del workshop utilizza HTTP. L'implementazione del certificato SSL/TLS è lasciata come sfida pratica per gli studenti, come previsto dal requisito finale del progetto.
+- **Sicurezza**: I file di configurazione sensibili (come `.env` e i docker secrets) sono presenti solo a scopo didattico per mostrare la struttura richiesta. **Non devono essere versionati**: aggiungili sempre al `.gitignore` e non caricarli mai su repository pubblici, come spiegato nelle slide. Gestisci i secrets solo in ambiente locale o tramite strumenti sicuri.
 - Per domande o approfondimenti, consulta le slide o chiedi durante il workshop!
