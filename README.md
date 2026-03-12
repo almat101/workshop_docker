@@ -1,8 +1,17 @@
-# Workshop Docker @ 42 Roma
+# Workshop: Born2Peer - Docker by amatta
+- Data: 19 Febbraio 2026
+- Location: Cluster 3° piano, 42 Roma
+- Evento: Born2Peer - by BDE
+
+Questo progetto è stato presentato e utilizzato durante il workshop "Born2Peer: Docker". L'obiettivo dell'incontro è stato quello di demistificare l'uso dei container e fornire una base solida per affrontare il progetto Inception del cursus 42.
+
+## Obiettivi del Workshop
+- Abbassare la barriera d'ingresso: Spiegare perché Docker non è solo "roba da sistemisti".
+- Inception Ready: Una guida pratica per soddisfare i severi requisiti del subject (TLS, Alpine, Volumes, Network isolati).
+- Mani in pasta: Dimostrazione live di build e orchestrazione multi-servizio.
 
 ## Descrizione
-Questo progetto è la base per un workshop su Docker dedicato al progetto 42 Inception per la 42 Roma.
-Le slide (index.html), generate con Reveal.js e servite tramite Nginx, illustrano:
+Il progetto funge da infrastruttura per le slide (generate con Reveal.js) e come esempio pratico di configurazione. Le slide, servite tramite Nginx, illustrano:
 - Concetti base di Docker: immagini, container, networking, volumi
 - Differenze tra VM e container
 - Comandi essenziali per build, run, debug
@@ -10,14 +19,14 @@ Le slide (index.html), generate con Reveal.js e servite tramite Nginx, illustran
 - Introduzione a Docker Compose e orchestrazione multi-servizio
 - Gestione dei volumi: persistenza, named volumes, bind mount
 - Networking tra container: bridge, DNS interno, service name
-- Gestione di variabili d'ambiente e secrets
+- Sicurezza: gestione di variabili d'ambiente e secrets
 - Requisiti tecnici del progetto Inception (checklist)
 
 ## Struttura del progetto
 - `srcs/requirements/nginx/Dockerfile`: build di Nginx su Alpine, copia config e file statici
-- `srcs/docker-compose.yml`: orchestrazione multi-servizio, gestione volumi e network
+- `srcs/requirements/nginx/conf/nginx.conf`: file di configurazione di nginx
 - `srcs/requirements/nginx/html/index.html`: slide Reveal.js per il workshop
-- `.dockerignore`: esclusione file inutili dalla build
+- `srcs/docker-compose.yml`: orchestrazione multi-servizio, gestione volumi e network
 
 ## Argomenti trattati nelle slide
 - Cos'è Docker e come funziona
@@ -45,5 +54,6 @@ Le slide (index.html), generate con Reveal.js e servite tramite Nginx, illustran
 
 ## Note
 - Tutti i file e le configurazioni sono pensati per essere didattici e facilmente adattabili.
-- Il progetto è conforme ai requisiti tecnici del subject 42 Inception.
+- Il progetto è strutturato per rispecchiare l'architettura richiesta dal subject **42 Inception**.
+- **Nota sul TLS:** Per semplicità didattica, questa versione del workshop utilizza HTTP. L'implementazione del certificato SSL/TLS è lasciata come sfida pratica per gli studenti, come previsto dal requisito finale del progetto.
 - Per domande o approfondimenti, consulta le slide o chiedi durante il workshop!
